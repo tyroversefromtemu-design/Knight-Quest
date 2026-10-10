@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#111a23" />
+  <meta name="description" content="KnightQuest — play chess, solve tactical puzzles, and build your chess journey." />
+  <title>KnightQuest — Your next move starts here</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#home" aria-label="KnightQuest home">
+        <span class="brand-mark">♞</span>
+        <span class="brand-word">knight<span>quest</span></span>
+      </a>
+      <div class="sidebar-label">PLAY & LEARN</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-page="home"><span class="nav-icon">⌂</span><span>Home</span><span class="nav-arrow">›</span></button>
+        <button class="nav-item" data-page="play"><span class="nav-icon">♟</span><span>Play vs AI</span></button>
+        <button class="nav-item" data-page="journey"><span class="nav-icon">⌁</span><span>Your journey</span><span class="nav-pill">MAP</span></button>
+        <button class="nav-item" data-page="puzzles"><span class="nav-icon">✦</span><span>Puzzles</span></button>
+        <button class="nav-item" data-page="analysis"><span class="nav-icon">⌕</span><span>Game analysis</span></button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-mini-card">
+        <div class="mini-spark">✧</div>
+        <div class="mini-title">Small moves.<br>Big progress.</div>
+        <div class="mini-copy">A little chess every day adds up.</div>
+        <div class="mini-progress"><span id="sidebar-progress-bar"></span></div>
+        <div class="mini-foot"><span>Journey progress</span><b id="sidebar-progress-text">0%</b></div>
+      </div>
+      <div class="sidebar-footer"><span class="online-dot"></span><span id="engine-status-side">Checking chess engine…</span></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button id="mobile-menu" class="mobile-menu" aria-label="Open navigation">☰</button>
+        <div class="breadcrumb"><span class="crumb-muted">KNIGHTQUEST</span><span class="crumb-slash">/</span><span id="topbar-title">Home</span></div>
+        <div class="topbar-actions">
+          <div class="streak-chip"><span class="flame">♨</span><span><b id="top-streak">0</b> day streak</span></div>
+          <button class="avatar-button" id="profile-button" aria-label="Profile">K</button>
+        </div>
+      </header>
+
+      <section class="page active" id="page-home">
+        <div class="welcome-row">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR PERSONAL CHESS SPACE</div>
+            <h1>Make your next move<br><span class="text-gradient">a great one.</span></h1>
+            <p class="lead">Play bold. Think deeper. Level up one clever move at a time.</p>
+            <div class="welcome-actions">
+              <button class="btn btn-primary" data-go="play">Play a game <span>↗</span></button>
+              <button class="btn btn-secondary" data-go="journey"><span class="btn-icon">⌁</span> Continue your journey</button>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="hero-spark spark-a">✦</div><div class="hero-spark spark-b">✧</div>
+            <div class="hero-piece-piece">♞</div>
+            <div class="hero-piece-shadow"></div>
+            <div class="hero-float-card card-rating"><span class="float-icon violet">✦</span><div><small>PUZZLE XP</small><strong id="hero-xp">0 XP</strong></div></div>
+            <div class="hero-float-card card-check"><span class="float-icon mint">✓</span><div><small>NEXT MISSION</small><strong id="hero-next-mission">Mate Meadow</strong></div></div>
+            <div class="hero-caption">THINK. FIND. PLAY.</div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span class="stat-icon purple-icon">✦</span><span class="stat-kicker">TOTAL EXPERIENCE</span></div><div class="stat-value" id="stat-xp">0 <small>XP</small></div><div class="stat-note"><span class="tiny-dot purple-dot"></span> Earn XP by solving puzzles</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-icon orange-icon">♨</span><span class="stat-kicker">CURRENT STREAK</span></div><div class="stat-value" id="stat-streak">0 <small>days</small></div><div class="stat-note"><span class="tiny-dot orange-dot"></span> Come back for your next move</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-icon mint-icon">♟</span><span class="stat-kicker">GAMES FINISHED</span></div><div class="stat-value" id="stat-games">0</div><div class="stat-note"><span class="tiny-dot mint-dot"></span><span id="stat-wins-note">Every game teaches you something</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-icon blue-icon">⌁</span><span class="stat-kicker">JOURNEY COMPLETE</span></div><div class="stat-value" id="stat-progress">0<small>%</small></div><div class="stat-note"><span class="tiny-dot blue-dot"></span> Unlock the next map node</div></article>
+        </div>
+
+        <div class="section-heading"><div><div class="eyebrow">YOUR NEXT CHAPTER</div><h2>Pick up where you left off</h2></div><button class="text-link" data-go="journey">View the whole map <span>→</span></button></div>
+        <div class="home-main-grid">
+          <article class="journey-preview panel-card">
+            <div class="panel-header"><div><div class="panel-overline">THE TRAINING TRAIL</div><h3>One path. Many “aha!” moments.</h3></div><span class="badge badge-mint" id="map-completion-badge">0 / 4 cleared</span></div>
+            <div class="mini-path" id="mini-path">
+              <div class="mini-path-line"></div>
+              <button class="mini-node node-current" data-stage="0"><span>♚</span><small>01</small></button>
+              <button class="mini-node node-next" data-stage="1"><span>♜</span><small>02</small></button>
+              <button class="mini-node node-locked" data-stage="2"><span>♞</span><small>03</small></button>
+              <button class="mini-node node-locked" data-stage="3"><span>♛</span><small>04</small></button>
+            </div>
+            <div class="mini-path-labels"><span>Mate Meadow</span><span>Rook Ridge</span><span>Fork Forest</span><span>Queen's Vault</span></div>
+            <div class="preview-bottom"><div class="preview-avatar">♞</div><div class="preview-copy"><strong id="preview-next-title">Start at Mate Meadow</strong><span id="preview-next-copy">Find a clean finish in one move.</span></div><button class="round-arrow" data-go="journey" aria-label="Open journey">↗</button></div>
+          </article>
+          <article class="daily-card panel-card">
+            <div class="daily-top"><span class="daily-icon">✦</span><span class="daily-tag">DAILY CHALLENGE</span><span class="daily-difficulty">● EASY START</span></div>
+            <div class="daily-art" aria-hidden="true"><div class="daily-glow"></div><div class="daily-big-piece">♟</div><div class="daily-coordinate">TACTICS / 001</div><div class="daily-spark spark-one">✦</div><div class="daily-spark spark-two">✧</div></div>
+            <h3>Can you spot the winning move?</h3><p>Train your eyes to see what the board is whispering.</p>
+            <button class="btn btn-light-full" data-go="puzzles">Solve today's puzzle <span>→</span></button>
+            <div class="daily-foot"><span>◷ About 2 minutes</span><span>+35 XP</span></div>
+          </article>
+        </div>
+
+        <div class="section-heading section-heading-spaced"><div><div class="eyebrow">CHOOSE YOUR MODE</div><h2>Chess, your way</h2></div></div>
+        <div class="mode-grid">
+          <button class="mode-card mode-play" data-go="play"><div class="mode-icon">♟</div><div class="mode-text"><strong>Battle the bot</strong><span>Pick a strength. Make it yours.</span></div><span class="mode-arrow">↗</span></button>
+          <button class="mode-card mode-puzzle" data-go="puzzles"><div class="mode-icon">✦</div><div class="mode-text"><strong>Sharpen your tactics</strong><span>Forks, mates, and clever ideas.</span></div><span class="mode-arrow">↗</span></button>
+          <button class="mode-card mode-review" data-go="analysis"><div class="mode-icon">⌕</div><div class="mode-text"><strong>Learn from a game</strong><span>Review moves and find improvements.</span></div><span class="mode-arrow">↗</span></button>
+        </div>
+      </section>
+
+      <section class="page" id="page-play">
+        <div class="page-intro"><div><div class="eyebrow"><span class="eyebrow-dot"></span> YOUR PRACTICE ARENA</div><h1>Play vs <span class="text-gradient">the computer.</span></h1><p class="lead">No pressure, just progress. Try ideas, learn patterns, play again.</p></div><div class="engine-pill"><span class="engine-light" id="engine-light"></span><span id="engine-status">Starting local engine…</span></div></div>
+        <div class="play-layout">
+          <div class="board-panel panel-card">
+            <div class="player-bar player-top"><div class="player-avatar bot-avatar">♞</div><div class="player-name"><strong>KnightQuest Bot</strong><span id="bot-level-label">Learner · Level 2</span></div><div class="player-rating" id="bot-rating">BOT</div></div>
+            <div class="board-and-eval"><div class="eval-track" title="Position evaluation"><div class="eval-black" id="eval-black"></div><div class="eval-label" id="eval-label">—</div></div><div class="board-wrap"><div id="chessboard" class="chessboard" aria-label="Chess board"></div></div></div>
+            <div class="player-bar player-bottom"><div class="player-avatar human-avatar">K</div><div class="player-name"><strong>You</strong><span>White pieces</span></div><div class="player-rating" id="move-count">0 moves</div></div>
+            <div class="board-controls"><button class="btn btn-secondary btn-small" id="new-game-btn">↻ New game</button><button class="btn btn-quiet btn-small" id="undo-btn">↶ Take back</button><button class="btn btn-quiet btn-small" id="flip-board-btn">⇅ Flip board</button><button class="btn btn-quiet btn-small" id="copy-pgn-btn">⇧ Copy PGN</button></div>
+            <div class="game-status-line"><span class="status-pulse"></span><span id="game-status">Your move — White to play.</span></div>
+          </div>
+          <aside class="play-side-column">
+            <article class="panel-card opponent-card">
+              <div class="panel-overline">SET UP YOUR MATCH</div><h3>Choose your challenge</h3><p class="muted-copy">You can change the bot strength before or during a game.</p>
+              <label class="field-label" for="difficulty-select">COMPUTER STRENGTH</label>
+              <select id="difficulty-select" class="select-field"><option value="0">1 · Friendly warm-up</option><option value="1" selected>2 · Learner</option><option value="2">3 · Club player</option><option value="3">4 · Expert</option></select>
+              <div class="difficulty-meter"><span class="difficulty-dot active"></span><span class="difficulty-dot active"></span><span class="difficulty-dot"></span><span class="difficulty-dot"></span><b id="difficulty-caption">Learning the basics</b></div>
+              <div class="divider"></div>
+              <div class="opponent-tip"><div class="tip-icon">✧</div><div><strong>Coach's tip</strong><p id="coach-tip">Before you move, ask: what can my opponent capture next?</p></div></div>
+              <button class="btn btn-primary btn-full" id="play-new-btn">Start a fresh game <span>→</span></button>
+            </article>
+            <article class="panel-card move-panel"><div class="panel-header compact"><div><div class="panel-overline">THE STORY SO FAR</div><h3>Move list</h3></div><span class="badge" id="move-total-badge">0 ply</span></div><div class="move-list" id="move-list"><div class="empty-state"><span>♟</span><strong>Your game starts here</strong><p>Make a move and the notation will appear.</p></div></div><div class="move-panel-bottom"><button class="text-link" id="analyze-current-btn">Analyze this game <span>→</span></button></div></article>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page" id="page-journey">
+        <div class="page-intro"><div><div class="eyebrow"><span class="eyebrow-dot"></span> YOUR LEARNING MAP</div><h1>The road to <span class="text-gradient">checkmate.</span></h1><p class="lead">Clear each checkpoint to unlock the next part of your chess adventure.</p></div><div class="journey-total"><strong id="journey-xp">0 XP</strong><span>earned so far</span></div></div>
+        <div class="journey-banner panel-card"><div class="banner-symbol">♞</div><div class="banner-copy"><div class="panel-overline">YOUR QUEST LOG</div><h3 id="journey-next-title">Every champion starts with one move.</h3><p id="journey-next-copy">Solve a puzzle to open the trail ahead.</p></div><div class="banner-progress"><div class="progress-number"><b id="journey-solved-count">0</b><span>/ 4 puzzles</span></div><div class="progress-rail"><span id="journey-progress-fill"></span></div></div></div>
+        <div class="map-area panel-card"><div class="map-heading"><div><div class="panel-overline">THE KNIGHTQUEST WORLD</div><h3>Four puzzles. One growing player.</h3></div><span class="map-legend"><i class="legend-dot complete"></i>Cleared <i class="legend-dot current"></i>Current <i class="legend-dot locked"></i>Locked</span></div>
+          <div class="journey-map" id="journey-map">
+            <div class="map-path-svg" aria-hidden="true"><svg viewBox="0 0 800 570" preserveAspectRatio="none"><path d="M390 55 C260 78 240 125 350 155 S530 205 440 250 S220 300 330 350 S550 395 440 445 S275 490 385 535" fill="none" stroke="#dfe5df" stroke-width="10" stroke-linecap="round" stroke-dasharray="3 18"/></svg></div>
+            <button class="map-node map-node-a" data-stage="0"><span class="map-node-icon">♚</span><span class="map-node-info"><b>01 · Mate Meadow</b><small>Finish in one move</small><em class="map-node-status">START HERE</em></span></button>
+            <button class="map-node map-node-b" data-stage="1"><span class="map-node-icon">♜</span><span class="map-node-info"><b>02 · Rook Ridge</b><small>Use open lines</small><em class="map-node-status">LOCKED</em></span></button>
+            <button class="map-node map-node-c" data-stage="2"><span class="map-node-icon">♞</span><span class="map-node-info"><b>03 · Fork Forest</b><small>Attack two targets</small><em class="map-node-status">LOCKED</em></span></button>
+            <button class="map-node map-node-d" data-stage="3"><span class="map-node-icon">♛</span><span class="map-node-info"><b>04 · Queen's Vault</b><small>Spot a loose queen</small><em class="map-node-status">LOCKED</em></span></button>
+            <button class="map-node map-node-e" data-stage="4"><span class="map-node-icon">⌕</span><span class="map-node-info"><b>05 · Review Tower</b><small>Study your own game</small><em class="map-node-status">LOCKED</em></span></button>
+            <button class="map-node map-node-f" data-stage="5"><span class="map-node-icon">✦</span><span class="map-node-info"><b>06 · KnightQuest Finals</b><small>Choose your next challenge</small><em class="map-node-status">LOCKED</em></span></button>
+          </div>
+          <div class="map-bottom"><span><span class="tiny-dot mint-dot"></span> Your progress is saved on this device.</span><button class="btn btn-primary btn-small" id="continue-map-btn">Continue trail <span>→</span></button></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-puzzles">
+        <div class="page-intro"><div><div class="eyebrow"><span class="eyebrow-dot"></span> TACTICS TRAINING</div><h1>Find the <span class="text-gradient">winning move.</span></h1><p class="lead">Take your time. Look for checks, captures, and threats before you move.</p></div><div class="puzzle-score-box"><span class="score-star">✦</span><div><strong id="puzzle-xp">0 XP</strong><span>your tactical haul</span></div></div></div>
+        <div class="puzzle-layout">
+          <div class="panel-card puzzle-board-card">
+            <div class="puzzle-meta-row"><span class="puzzle-number" id="puzzle-number">PUZZLE 01 / 04</span><span class="badge badge-lilac" id="puzzle-difficulty">MATE IN ONE</span></div>
+            <div class="puzzle-title-row"><div><h2 id="puzzle-title">A clean finish</h2><p id="puzzle-subtitle">White to move · Find checkmate.</p></div><div class="puzzle-piece-mark">♔</div></div>
+            <div class="puzzle-board-wrap"><div id="puzzleBoard" class="chessboard" aria-label="Puzzle chess board"></div></div>
+            <div class="puzzle-feedback" id="puzzle-feedback" role="status"><span class="feedback-icon">✦</span><span id="puzzle-feedback-text">Look for a move that leaves the king with no safe square.</span></div>
+            <div class="puzzle-controls"><button class="btn btn-secondary btn-small" id="hint-btn">☼ Give me a hint</button><button class="btn btn-quiet btn-small" id="show-answer-btn">Show solution</button><button class="btn btn-primary btn-small hidden" id="next-puzzle-btn">Next puzzle <span>→</span></button></div>
+          </div>
+          <aside class="puzzle-side-column">
+            <article class="panel-card puzzle-coach-card"><div class="coach-avatar">♞</div><div class="panel-overline">THE THINKING ZONE</div><h3 id="thinking-title">Scan the whole board.</h3><p id="thinking-copy">Checks force a response. Can you find a check that the king cannot escape?</p><div class="thinking-rule"><span>01</span><div><b>Checks first</b><small>Can you attack the king?</small></div></div><div class="thinking-rule"><span>02</span><div><b>Then captures</b><small>Is a valuable piece hanging?</small></div></div><div class="thinking-rule"><span>03</span><div><b>Then threats</b><small>Can one move attack two things?</small></div></div></article>
+            <article class="panel-card puzzle-progress-card"><div class="panel-header compact"><div><div class="panel-overline">YOUR COLLECTION</div><h3>Checkpoint progress</h3></div><span class="collection-count" id="collection-count">0/4</span></div><div class="puzzle-dots" id="puzzle-dots"></div><div class="collection-foot"><span>Clear a puzzle to earn</span><strong>+35 XP ✦</strong></div></article>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page" id="page-analysis">
+        <div class="page-intro"><div><div class="eyebrow"><span class="eyebrow-dot"></span> YOUR GAME, DECODED</div><h1>Think back. <span class="text-gradient">Play better.</span></h1><p class="lead">Review a game from KnightQuest or paste a PGN to explore your moves.</p></div><div class="analysis-status-card"><span class="analysis-status-icon">⌕</span><div><strong id="analysis-engine-label">Engine analysis</strong><span id="analysis-engine-sub">Local analysis is always available</span></div></div></div>
+        <div class="analysis-layout">
+          <div class="panel-card analysis-board-card"><div class="panel-header"><div><div class="panel-overline">POSITION EXPLORER</div><h3 id="analysis-position-title">Starting position</h3></div><span class="badge" id="analysis-ply-badge">0 / 0 ply</span></div><div class="analysis-board-and-eval"><div class="analysis-eval-bar"><div id="analysis-eval-fill"></div></div><div class="board-wrap analysis-board-wrap"><div id="analysisBoard" class="chessboard" aria-label="Analysis chess board"></div></div></div><div class="analysis-nav-controls"><button class="btn btn-quiet btn-small" id="analysis-prev-btn">← Previous</button><div class="analysis-position-number" id="analysis-position-number">Start position</div><button class="btn btn-quiet btn-small" id="analysis-next-btn">Next →</button></div><div class="position-eval"><div class="eval-round">±</div><div><span>POSITION EVALUATION</span><strong id="analysis-eval-text">Not analyzed yet</strong></div><button class="btn btn-secondary btn-small" id="analyze-position-btn">Analyze position</button></div></div>
+          <div class="analysis-side-column">
+            <article class="panel-card review-card"><div class="panel-header compact"><div><div class="panel-overline">GAME REVIEW</div><h3>Find the turning points</h3></div><span class="review-badge">AI</span></div><p class="muted-copy">Ask the engine to inspect each move and highlight places worth a second look.</p><button class="btn btn-primary btn-full" id="review-game-btn">Analyze this game <span>→</span></button><div class="analysis-progress-wrap hidden" id="analysis-progress-wrap"><div class="progress-rail"><span id="analysis-progress-fill"></span></div><small id="analysis-progress-text">Preparing analysis…</small></div><div id="review-results" class="review-results"><div class="empty-state slim"><span>✦</span><p>Your move-by-move review will appear here.</p></div></div></article>
+            <article class="panel-card pgn-card"><div class="panel-header compact"><div><div class="panel-overline">BRING A GAME</div><h3>Import PGN</h3></div><span class="pgn-icon">↥</span></div><p class="muted-copy">Paste a game's PGN notation below. A PGN is a text record of the moves.</p><textarea id="pgn-input" class="pgn-textarea" placeholder='[Event "My game"]&#10;1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 ...'></textarea><div class="pgn-actions"><button class="btn btn-secondary btn-small" id="load-pgn-btn">Load game</button><button class="btn btn-quiet btn-small" id="paste-current-pgn-btn">Use my game</button></div><div class="pgn-message" id="pgn-message" aria-live="polite"></div></article>
+          </div>
+        </div>
+        <article class="panel-card full-review-table"><div class="panel-header"><div><div class="panel-overline">MOVE-BY-MOVE NOTES</div><h3>What happened on the board</h3></div><span class="badge" id="review-move-count">No game loaded</span></div><div id="review-move-table" class="review-move-table"><div class="empty-state slim"><span>♟</span><p>Load or play a game, then run a review to see move notes.</p></div></div></article>
+      </section>
+
+      <footer class="app-footer global-footer">KnightQuest <span>♞</span> Play thoughtfully. Keep getting better.</footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="promotion-modal" class="modal-backdrop hidden"><div class="promotion-modal"><div class="panel-overline">PAWN PROMOTION</div><h3>Choose your new piece</h3><div class="promotion-choices"><button data-promotion="q">♕<small>Queen</small></button><button data-promotion="r">♖<small>Rook</small></button><button data-promotion="b">♗<small>Bishop</small></button><button data-promotion="n">♘<small>Knight</small></button></div></div></div>
+</body>
+</html>
